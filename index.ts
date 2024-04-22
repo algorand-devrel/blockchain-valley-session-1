@@ -12,7 +12,7 @@ import * as algokit from '@algorandfoundation/algokit-utils';
 */
 
 // 문제 1 시작
-"*** 여기에 코드 작성 *** ttttt" 
+"*** 여기에 코드 작성 ***" 
 // 문제 1 끝
 
 async function main() {

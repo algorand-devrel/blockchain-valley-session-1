@@ -4,10 +4,13 @@ import * as algokit from '@algorandfoundation/algokit-utils';
 블록체인 밸리 X 알고랜드 개발자 부트캠프 코딩 과제 #1
 
 이번 과제에서는 다음과 같은 시나리오를 algokit utils typescript 라이브러리를 사용해서 구현해보겠습니다. 
-앨리스는 애플 비전 프로가 너무 사고싶었지만 한국에서는 팔지 않아서 미국에 있는 크리스에게 대신 사달라고 부탁하기로 했다.
-크리스는 앨리스에게 애플 비전 프로를 사주는 대신 이자 10%를 달라고 요구했다.
-앨리스는 크리스의 조건에 동의했고 크리스는 앨리스 대신 밥으로 부터 애플 비전 프로를 구매하기로 했다. 밥은 크리스에게로부터 
-돈을 받으면 앨리스에게 애플 비전 프로를 보내겠다고 했다. 
+
+시나리오:
+앨리스는 애플 비전 프로가 너무 사고싶었지만 한국에서는 팔지 않아서 미국에 있는 크리스에게 대신 사달라고 부탁하기로 합니다.
+크리스는 앨리스에게 애플 비전 프로를 사주는 대신 이자 10%를 달라고 요구했습니다.
+앨리스는 크리스의 조건에 동의했고 크리스는 앨리스 대신 밥으로 부터 애플 비전 프로를 구매하기로 합니다. 밥은 크리스에게로부터 
+돈을 받으면 앨리스에게 애플 비전 프로를 보내겠다고 합니다. 
+이렇게 3자 거래가 성립되었습니다. 이 거래가 공정하게 이루어지려면 꼭 3개의 트랜잭션이 동시에 체결되어야 합니다.
 
 이 상상의 세계에서는 비전 프로의 가격은 100 ALGO입니다 (부럽다... ㅠ_ㅠ)
 
@@ -19,7 +22,9 @@ async function main() {
     const algorand = algokit.AlgorandClient.defaultLocalNet();
 
     /*
-    문제 1: 테스트에 사용할 앨리스, 밥, 크리스 계정 생성
+    문제 1 
+    테스트에 사용할 앨리스, 밥, 크리스의 계정을 알고랜드 클라이언트의 account 객체를 사용해서 랜덤 생성하세요.
+    힌트: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/classes/types_account_manager.AccountManager.md#random
     */
 
     // 문제 1 시작
@@ -30,9 +35,14 @@ async function main() {
     const accounts = [alice, bob, chris];
     
     /*
-    문제 2: 3개의 계정에 120 알고씩 디스팬서로부터 송금하는 결제 트랜잭션을 작성하세요.
+    문제 2 
+    위에 생성한 계정들은 현재 알고를 하나도 가지고 있지 않는 상태입니다. 
+    생성된 3개의 계정에 120 알고씩 디스팬서로부터 송금하는 결제 트랜잭션을 작성하세요.
 
     디스팬서란? 디스팬서는 지금 연결된 네트워크(메인넷 제외)에서 알고를 대량 보유하고 있고 송금할 수 있는 계정입니다.
+    힌트: 
+    - send payment: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/classes/types_algorand_client.AlgorandClient.md#send
+    - paymentParam: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/modules/types_composer.md#paymentparams
     */
     const dispenser = await algorand.account.dispenser();
     for (const account of accounts) {
@@ -42,13 +52,17 @@ async function main() {
     }
 
     /* 
-    문제 3:
-    애플 비전 프로로 교환 가능한 NFT ASA를 아래 패러미터로 설정해서 생성하세요. 
+    문제 3
+    아래 패러미터로 설정한 애플 비전 프로로 교환 가능한 NFT ASA를 밥이 생성하는 트랜잭션을 작성하세요. 
     패러미터:
     - 에셋 이름: "Apple Vision Pro"
-    - 단위 이름: "AVP"
+    - 단위(Unit) 이름: "AVP"
     - 소수점: 0
     - 총 발행량: 1
+
+    힌트:
+    - asset create: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/classes/types_algorand_client.AlgorandClient.md#type-declaration:~:text=%2D-,assetCreate,-(params%3A%20AssetCreateParams%2C
+    - assetCreateParam: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/modules/types_composer.md#assetcreateparams
     */
     // 문제 3 시작
     const createResult = "*** 여기에 코드 작성 ***"
@@ -58,10 +72,15 @@ async function main() {
     const assetId = BigInt(createResult.confirmation.assetIndex!);
 
     /* 
-    문제 4: 
+    문제 4
     앨리스가 애플 비전 프로 ASA를 받을 수 있도록 Opt-in하세요.
     asa id는 위에서 생성한 assetId 변수를 사용하세요.
+
+    힌트:
+    - asset opt-in: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/classes/types_algorand_client.AlgorandClient.md#type-declaration:~:text=%2D-,assetOptIn,-(params%3A%20AssetOptInParams%2C
+    - assetOptinParam: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/modules/types_composer.md#assetoptinparams
     */
+
     // 문제 4 시작
     "*** 여기에 코드 작성 ***"
     // 문제 4 끝
@@ -77,8 +96,8 @@ async function main() {
     단계 1: 일단 밑에 보이는 3개의 변수 (chrisPayTxnParam, bobSendAssetTxnParam, alicePayTxnParam)에 
     각각의 트랜잭션을 위한 패러미터 객체를 생성하세요. 
     -> 여기서 트랜잭션 패러미터란 각각의 트랜잭션의 설정값을 의미합니다.
-      node_modules/@algorandfoundation/algokit-utils/types/composer.d.ts 파일을 참고하시면 
-      트랜잭션 종류에 따라 어떤 값들을 설정할 수 있는지 알 수 있습니다.
+      https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/modules/types_composer.md#commontransactionparams
+      위 링크에 가면 모든 트랜잭션 패러미터에 들어가는 commonTransactionParams과 각각의 트랜잭션 패러미터에 뭐가 들어가야하는 지 알 수 있습니다.
 
     단계 2: 생성한 3개의 트랜잭션 패러미터 객체와 algorand client의 newGroup() 메소드를 사용해서 어토믹 그룹을 
     생성한 후, 그 그룹에 각각의 트랜잭션을 추가하세요. 추가 방법은 `atomicGroup.`을 쳐보면 intellisense를 통해 
@@ -86,12 +105,16 @@ async function main() {
     `await atomicGroup.addPayment(chrisPayTxnParam)`과 같은 코드로 트랜잭션 1을 추가할 수 있습니다. 그 뒤로
     다른 두 트랜잭션도 위 코드 뒤에 이어서 추가할 수 있습니다. 그러고 나서 마지막에 .execute() 메소드를 호출하면 
     어토믹 그룹에 추가된 3개의 트랜잭션을 동시에 보낼 수 있습니다.
+
+    힌트:
+    - addPayment: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/classes/types_composer.default.md#addpayment
+    - addAssetTransfer: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/classes/types_composer.default.md#addassettransfer
     */
 
     // 크리스가 밥에서 100 ALGO를 송금하는 트랜잭션 패러미터 객체 생성
     const chrisPayTxnParam = {
-        sender: bob.addr,
-        receiver: chris.addr,
+        sender: chris.addr,
+        receiver: bob.addr,
         amount: algokit.algos(100),
     }
 

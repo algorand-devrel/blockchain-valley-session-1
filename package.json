@@ -1,5 +1,5 @@
 {
-  "name": "algorand-puzzle-1",
+  "name": "blockchain-valley-session-1",
   "scripts": {
     "start": "tsx -r dotenv/config index.ts",
     "test": "tsx -r dotenv/config test.ts"

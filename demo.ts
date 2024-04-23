@@ -22,7 +22,7 @@ async function main() {
         await algorand.send.payment({
             sender: alice.addr,
             receiver: bob.addr,
-            amount: algokit.algos(9.89),
+            amount: algokit.algos(10),
         })
         console.log("알고 보내기 성공!");
     } catch(e) {

@@ -114,7 +114,7 @@ async function main() {
     const aliceInfo = await algorand.account.getInformation(alice.addr)
     const aliceAssets = aliceInfo.assets ?? [];
     if (BigInt(aliceAssets[0].assetId) === assetId) {
-        console.log("앨리스: 앗싸 애플 비전 프로 받았다!")
+        console.log("앨리스: 드디어 애플 비전 프로가 내손에...!! >.<")
     } else {
         console.log("앨리스: 애플 비전 프로 못 받았다 ㅠㅠ")
     }
@@ -122,7 +122,7 @@ async function main() {
     const bobInfo = await algorand.account.getInformation(bob.addr)
     const bobExpectedBalance = algokit.algos(120).valueOf() + algokit.algos(100).valueOf() - algokit.microAlgos(2000).valueOf()
     if (bobInfo.amount === bobExpectedBalance) {
-        console.log("밥: 앗싸 100 ALGO 받았다!")
+        console.log("밥: 애플 비전 프로 필요 없었는데 크리스한테 100 ALGO 받고 잘 팔았다!")
     } else {
         console.log("밥: 100 ALGO 못 받았다 ㅠㅠ")
     }
@@ -130,7 +130,7 @@ async function main() {
     const chrisInfo = await algorand.account.getInformation(chris.addr)
     const chrisExpectedBalance = algokit.algos(120).valueOf() - algokit.algos(100).valueOf() + algokit.algos(110).valueOf() - algokit.microAlgos(1000).valueOf()
     if (chrisInfo.amount === chrisExpectedBalance) {
-        console.log("크리스: 애플 비전 프로 잘 사고 앨리스한테 110 ALGO 받았다!")
+        console.log("크리스: 애플 비전 프로 잘 사고 앨리스한테 110 ALGO 받아서 돈 벌었다!")
     } else {
         console.log("크리스: 애플 비전 프로 못 샀거나 앨리스한테 110 ALGO 못 받았다 ㅠㅠ")  
     }

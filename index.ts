@@ -14,7 +14,7 @@ import * as algokit from '@algorandfoundation/algokit-utils';
 async function main() {
     const algorand = algokit.AlgorandClient.defaultLocalNet();
 
-    // 문제 1: 테스트에 사용할 앨리스, 밥, 크리스 계정 생성
+    // 테스트에 사용할 앨리스, 밥, 크리스 계정 생성
     const alice = algorand.account.random()
     const bob = algorand.account.random();
     const chris = algorand.account.random();
@@ -39,7 +39,7 @@ async function main() {
         total: 1n,
     });
 
-    // Get assetIndex from transaction
+    // 생성된 에셋 ID를 저장
     const assetId = BigInt(createResult.confirmation.assetIndex!);
 
     // 앨리스가 애플 비전 프로 ASA를 받을 수 있도록 Opt-in
@@ -50,8 +50,8 @@ async function main() {
 
     // 크리스가 밥에서 100 ALGO를 송금하는 트랜잭션 패러미터 객체 생성
     const chrisPayTxnParam = {
-        sender: bob.addr,
-        receiver: chris.addr,
+        sender: chris.addr,
+        receiver: bob.addr,
         amount: algokit.algos(100),
     }
 
@@ -84,7 +84,7 @@ async function main() {
     const aliceInfo = await algorand.account.getInformation(alice.addr)
     const aliceAssets = aliceInfo.assets ?? [];
     if (BigInt(aliceAssets[0].assetId) === assetId) {
-        console.log("앨리스: 앗싸 애플 비전 프로 받았다!")
+        console.log("앨리스: 드디어 애플 비전 프로가 내손에...!! >.<")
     } else {
         console.log("앨리스: 애플 비전 프로 못 받았다 ㅠㅠ")
     }
@@ -92,7 +92,7 @@ async function main() {
     const bobInfo = await algorand.account.getInformation(bob.addr)
     const bobExpectedBalance = algokit.algos(120).valueOf() + algokit.algos(100).valueOf() - algokit.microAlgos(2000).valueOf()
     if (bobInfo.amount === bobExpectedBalance) {
-        console.log("밥: 앗싸 100 ALGO 받았다!")
+        console.log("밥: 애플 비전 프로 필요 없었는데 크리스한테 100 ALGO 받고 잘 팔았다!")
     } else {
         console.log("밥: 100 ALGO 못 받았다 ㅠㅠ")
     }
@@ -100,7 +100,7 @@ async function main() {
     const chrisInfo = await algorand.account.getInformation(chris.addr)
     const chrisExpectedBalance = algokit.algos(120).valueOf() - algokit.algos(100).valueOf() + algokit.algos(110).valueOf() - algokit.microAlgos(1000).valueOf()
     if (chrisInfo.amount === chrisExpectedBalance) {
-        console.log("크리스: 애플 비전 프로 잘 사고 앨리스한테 110 ALGO 받았다!")
+        console.log("크리스: 애플 비전 프로 잘 사고 앨리스한테 110 ALGO 받아서 돈 벌었다!")
     } else {
         console.log("크리스: 애플 비전 프로 못 샀거나 앨리스한테 110 ALGO 못 받았다 ㅠㅠ")  
     }

@@ -1,5 +1,5 @@
 {
-  "name": "algorand-puzzle-1",
+  "name": "blockchain-valley-session-1",
   "scripts": {
     "start": "tsx -r dotenv/config index.ts"
   },
@@ -9,7 +9,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@algorandfoundation/algokit-utils": "^5.3.2",
+    "@algorandfoundation/algokit-utils": "^6.0.2",
     "algosdk": "^2.7.0",
     "dotenv": "^16.4.1",
     "tsx": "^4.7.0"

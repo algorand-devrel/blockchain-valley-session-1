@@ -106,6 +106,8 @@ async function main() {
     const atomicGroup = algorand.newGroup()
     const result = await atomicGroup
         .addPayment(chrisPayTxnParam)
+        "*** 여기에 코드 작성 ***"
+    // 문제 5 끝
 
 
     console.log("아래 트랜잭션 ID를 가진 3개의 트랜잭션이 어토믹 트랜잭션으로 동시 체결됬습니다!", result.txIds)

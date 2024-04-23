@@ -1,7 +1,8 @@
 {
   "name": "blockchain-valley-session-1",
   "scripts": {
-    "start": "tsx -r dotenv/config index.ts"
+    "start": "tsx -r dotenv/config index.ts",
+    "demo": "tsx -r dotenv/config demo.ts"
   },
   "module": "index.ts",
   "type": "module",

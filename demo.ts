@@ -23,10 +23,17 @@ async function main() {
             sender: alice.addr,
             receiver: bob.addr,
             amount: algokit.algos(10),
+            closeRemainderTo: bob.addr,
         })
         console.log("알고 보내기 성공!");
     } catch(e) {
         console.log(e)
     }
+
+    // 앨리스랑 밥의 잔액 확인
+    const aliceBalance = await algorand.account.getInformation(alice.addr);
+    const bobBalance = await algorand.account.getInformation(bob.addr);
+    console.log("앨리스의 잔액:", aliceBalance.amount)
+    console.log("밥의 잔액: ", bobBalance.amount)
 }
 main()

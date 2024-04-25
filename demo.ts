@@ -33,7 +33,7 @@ async function main() {
     // 앨리스랑 밥의 잔액 확인
     const aliceBalance = await algorand.account.getInformation(alice.addr);
     const bobBalance = await algorand.account.getInformation(bob.addr);
-    console.log("앨리스의 잔액:", aliceBalance.amount)
-    console.log("밥의 잔액: ", bobBalance.amount)
+    console.log(`앨리스의 잔액: ${aliceBalance.amount} microAlgos   ${aliceBalance.amount / 1_000_000} Algos`)
+    console.log(`밥의 잔액: ${bobBalance.amount} microAlgos   ${bobBalance.amount / 1_000_000} Algos`)
 }
 main()

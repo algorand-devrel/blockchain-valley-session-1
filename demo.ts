@@ -23,7 +23,6 @@ async function main() {
             sender: alice.addr,
             receiver: bob.addr,
             amount: algokit.algos(10),
-            closeRemainderTo: bob.addr,
         })
         console.log("알고 보내기 성공!");
     } catch(e) {

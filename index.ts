@@ -1,4 +1,4 @@
-import * as algokit from '@algorandfoundation/algokit-utils';
+import * as algokit from "@algorandfoundation/algokit-utils";
 
 /*
 블록체인 밸리 X 알고랜드 개발자 부트캠프 코딩 과제 #1
@@ -18,23 +18,23 @@ import * as algokit from '@algorandfoundation/algokit-utils';
 */
 
 async function main() {
-    // 로컬 네트워크로 연결된 알고랜드 클라이언트 생성
-    const algorand = algokit.AlgorandClient.defaultLocalNet();
+  // 로컬 네트워크로 연결된 알고랜드 클라이언트 생성
+  const algorand = algokit.AlgorandClient.defaultLocalNet();
 
-    /*
+  /*
     문제 1 
     테스트에 사용할 앨리스, 밥, 크리스의 계정을 알고랜드 클라이언트의 account 객체를 사용해서 랜덤 생성하세요.
     힌트: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/classes/types_account_manager.AccountManager.md#random
     */
 
-    // 문제 1 시작
-    const alice = "*** 여기에 코드 작성 ***"
-    const bob = "*** 여기에 코드 작성 ***"
-    const chris = "*** 여기에 코드 작성 ***"
-    // 문제 1 끝
-    const accounts = [alice, bob, chris];
-    
-    /*
+  // 문제 1 시작
+  const alice = algorand.account.random();
+  const bob = algorand.account.random();
+  const chris = algorand.account.random();
+  // 문제 1 끝
+  const accounts = [alice, bob, chris];
+
+  /*
     문제 2 
     위에 생성한 계정들은 현재 알고를 하나도 가지고 있지 않는 상태입니다. 
     생성된 3개의 계정에 120 알고씩 디스팬서로부터 송금하는 결제 트랜잭션을 작성하세요.
@@ -44,17 +44,18 @@ async function main() {
     - send payment: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/classes/types_algorand_client.AlgorandClient.md#send
     - paymentParam: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/modules/types_composer.md#paymentparams
     */
-    const dispenser = await algorand.account.dispenser();
-    for (const account of accounts) {
-        // 문제 2 시작
-        "*** 여기에 코드 작성 ***"
-        // 문제 2 끝
-    }
+  const dispenser = await algorand.account.dispenser();
+  for (const account of accounts) {
+    await algorand.send.payment({
+      sender: dispenser.addr,
+      receiver: account.addr,
+      amount: algokit.algos(120),
+    });
+  }
 
-    /* 
+  /* 
     문제 3
-    아래 패러미터로 설정한 애플 비전 프로로 교환 가능한 NF
-    T ASA를 밥이 생성하는 트랜잭션을 작성하세요. 
+    아래 패러미터로 설정한 애플 비전 프로로 교환 가능한 NFT ASA를 밥이 생성하는 트랜잭션을 작성하세요. 
     패러미터:
     - 에셋 이름: "Apple Vision Pro"
     - 단위(Unit) 이름: "AVP"
@@ -65,14 +66,19 @@ async function main() {
     - asset create: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/classes/types_algorand_client.AlgorandClient.md#type-declaration:~:text=%2D-,assetCreate,-(params%3A%20AssetCreateParams%2C
     - assetCreateParam: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/modules/types_composer.md#assetcreateparams
     */
-    // 문제 3 시작
-    const createResult = "*** 여기에 코드 작성 ***"
-    // 문제 3 끝
+  const createResult = await algorand.send.assetCreate({
+      assetName: "Apple Vision Pro",
+      unitName: "AVP",
+      decimals: 0,
+      total: BigInt(1),
+      sender: bob.addr,
+  });
 
-    // Get assetIndex from transaction
-    const assetId = BigInt(createResult.confirmation.assetIndex!);
 
-    /* 
+  // Get assetIndex from transaction
+  const assetId = BigInt(createResult.confirmation.assetIndex!);
+
+  /* 
     문제 4
     앨리스가 애플 비전 프로 ASA를 받을 수 있도록 Opt-in하세요.
     asa id는 위에서 생성한 assetId 변수를 사용하세요.
@@ -82,11 +88,13 @@ async function main() {
     - assetOptinParam: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/modules/types_composer.md#assetoptinparams
     */
 
-    // 문제 4 시작
-    "*** 여기에 코드 작성 ***"
-    // 문제 4 끝
+  await algorand.send.assetOptIn({
+      assetId: assetId,
+      sender: alice.addr
+  })
 
-    /* 
+
+  /* 
     문제 5
     이번 문제에서는 알고랜드 레이어 1 기능인 어토믹 트랜잭션을 사용해서 3자 거래를 동시다발적으로 체결해보겠습니다.
     총 3개의 트랜잭션을 동시에 체결해야 합니다.
@@ -112,55 +120,84 @@ async function main() {
     - addAssetTransfer: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/classes/types_composer.default.md#addassettransfer
     */
 
-    // 크리스가 밥에서 100 ALGO를 송금하는 트랜잭션 패러미터 객체 생성
-    const chrisPayTxnParam = {
-        sender: chris.addr,
-        receiver: bob.addr,
-        amount: algokit.algos(100),
-    }
+  // 크리스가 밥에서 100 ALGO를 송금하는 트랜잭션 패러미터 객체 생성
+  const chrisPayTxnParam = {
+    sender: chris.addr,
+    receiver: bob.addr,
+    amount: algokit.algos(100),
+  };
 
-    // 밥이 앨리스에게 애플 비전 프로 ASA를 송금하는 트랜잭션 객체 생성
-    // 문제 5 시작
-    const bobSendAssetTxnParam = "*** 여기에 코드 작성 ***"
+  // 밥이 앨리스에게 애플 비전 프로 ASA를 송금하는 트랜잭션 객체 생성
+  // 문제 5 시작
+  const bobSendAssetTxnParam = {
+    sender: bob.addr,
+    receiver: alice.addr,
+    amount: BigInt(1),
+    assetId: assetId,
+  };
 
-    // 앨리스가 크리스에게 110 ALGO를 송금하는 트랜잭션 객체 생성
-    const alicePayTxnParam = "*** 여기에 코드 작성 ***"
+  // 앨리스가 크리스에게 110 ALGO를 송금하는 트랜잭션 객체 생성
+  const alicePayTxnParam = {
+    sender: alice.addr,
+    receiver: chris.addr,
+    amount: algokit.algos(110),
+  };
 
-    // 3개의 트랜잭션을 atomic transaction composer로 묶어서 전송
-    const atomicGroup = "*** 여기에 코드 작성 ***"
-    const result = "*** 여기에 코드 작성 ***"
-    // 문제 5 끝
 
-    console.log("아래 트랜잭션 ID를 가진 3개의 트랜잭션이 어토믹 트랜잭션으로 동시 체결됬습니다!", result.txIds)
+  // 3개의 트랜잭션을 atomic transaction composer로 묶어서 전송
+  const atomicGroup = await algorand.newGroup()
+  await atomicGroup.addPayment(chrisPayTxnParam);
+  await atomicGroup.addAssetTransfer(bobSendAssetTxnParam);
+  await atomicGroup.addPayment(alicePayTxnParam);
+  const result = await atomicGroup.execute();
 
-    // 앨리스, 밥, 크리스의 계정 정보를 출력하여 정상적으로 수행되었는지 확인
-    const aliceInfo = await algorand.account.getInformation(alice.addr)
-    const aliceAssets = aliceInfo.assets ?? [];
-    if (BigInt(aliceAssets[0].assetId) === assetId) {
-        console.log("앨리스: 드디어 애플 비전 프로가 내손에...!! >.<")
-    } else {
-        console.log("앨리스: 애플 비전 프로 못 받았다 ㅠㅠ")
-    }
 
-    const bobInfo = await algorand.account.getInformation(bob.addr)
-    const bobExpectedBalance = algokit.algos(120).valueOf() + algokit.algos(100).valueOf() - algokit.microAlgos(2000).valueOf()
-    if (bobInfo.amount === bobExpectedBalance) {
-        console.log("밥: 애플 비전 프로 필요 없었는데 크리스한테 100 ALGO 받고 잘 팔았다!")
-    } else {
-        console.log("밥: 100 ALGO 못 받았다 ㅠㅠ")
-    }
+  console.log(
+    "아래 트랜잭션 ID를 가진 3개의 트랜잭션이 어토믹 트랜잭션으로 동시 체결됬습니다!",
+    result.txIds
+  );
 
-    const chrisInfo = await algorand.account.getInformation(chris.addr)
-    const chrisExpectedBalance = algokit.algos(120).valueOf() - algokit.algos(100).valueOf() + algokit.algos(110).valueOf() - algokit.microAlgos(1000).valueOf()
-    if (chrisInfo.amount === chrisExpectedBalance) {
-        console.log("크리스: 애플 비전 프로 잘 사고 앨리스한테 110 ALGO 받아서 돈 벌었다!")
-    } else {
-        console.log("크리스: 애플 비전 프로 못 샀거나 앨리스한테 110 ALGO 못 받았다 ㅠㅠ")  
-    }
+  // 앨리스, 밥, 크리스의 계정 정보를 출력하여 정상적으로 수행되었는지 확인
+  const aliceInfo = await algorand.account.getInformation(alice.addr);
+  const aliceAssets = aliceInfo.assets ?? [];
+  if (BigInt(aliceAssets[0].assetId) === assetId) {
+    console.log("앨리스: 드디어 애플 비전 프로가 내손에...!! >.<");
+  } else {
+    console.log("앨리스: 애플 비전 프로 못 받았다 ㅠㅠ");
+  }
 
-    // === 세 계정 정보 출력이 어떤 정보를 제공하는지 궁금하면 uncomment 후 실행해보세요! ===
-    // console.log("Alice's Account:", await algorand.account.getInformation(alice.addr));
-    // console.log("Bob's Account:", await algorand.account.getInformation(bob.addr));
-    // console.log("Chris's Account:", await algorand.account.getInformation(chris.addr));
+  const bobInfo = await algorand.account.getInformation(bob.addr);
+  const bobExpectedBalance =
+    algokit.algos(120).valueOf() +
+    algokit.algos(100).valueOf() -
+    algokit.microAlgos(2000).valueOf();
+  if (bobInfo.amount === bobExpectedBalance) {
+    console.log(
+      "밥: 애플 비전 프로 필요 없었는데 크리스한테 100 ALGO 받고 잘 팔았다!"
+    );
+  } else {
+    console.log("밥: 100 ALGO 못 받았다 ㅠㅠ");
+  }
+
+  const chrisInfo = await algorand.account.getInformation(chris.addr);
+  const chrisExpectedBalance =
+    algokit.algos(120).valueOf() -
+    algokit.algos(100).valueOf() +
+    algokit.algos(110).valueOf() -
+    algokit.microAlgos(1000).valueOf();
+  if (chrisInfo.amount === chrisExpectedBalance) {
+    console.log(
+      "크리스: 애플 비전 프로 잘 사고 앨리스한테 110 ALGO 받아서 돈 벌었다!"
+    );
+  } else {
+    console.log(
+      "크리스: 애플 비전 프로 못 샀거나 앨리스한테 110 ALGO 못 받았다 ㅠㅠ"
+    );
+  }
+
+  // === 세 계정 정보 출력이 어떤 정보를 제공하는지 궁금하면 uncomment 후 실행해보세요! ===
+  // console.log("Alice's Account:", await algorand.account.getInformation(alice.addr));
+  // console.log("Bob's Account:", await algorand.account.getInformation(bob.addr));
+  // console.log("Chris's Account:", await algorand.account.getInformation(chris.addr));
 }
-main()
+main();

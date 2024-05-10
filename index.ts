@@ -28,9 +28,9 @@ async function main() {
     */
 
     // 문제 1 시작
-    const alice = "*** 여기에 코드 작성 ***"
-    const bob = "*** 여기에 코드 작성 ***"
-    const chris = "*** 여기에 코드 작성 ***"
+    const alice = await algorand.account.random();
+    const bob = await algorand.account.random();
+    const chris = await algorand.account.random();
     // 문제 1 끝
     const accounts = [alice, bob, chris];
     
@@ -47,7 +47,11 @@ async function main() {
     const dispenser = await algorand.account.dispenser();
     for (const account of accounts) {
         // 문제 2 시작
-        "*** 여기에 코드 작성 ***"
+        await(algorand.send.payment({
+            amount: algokit.algos(120),
+            receiver: account.addr,
+            sender: dispenser.addr
+        }))
         // 문제 2 끝
     }
 
@@ -64,9 +68,16 @@ async function main() {
     힌트:
     - asset create: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/classes/types_algorand_client.AlgorandClient.md#type-declaration:~:text=%2D-,assetCreate,-(params%3A%20AssetCreateParams%2C
     - assetCreateParam: https://github.com/algorandfoundation/algokit-utils-ts/blob/main/docs/code/modules/types_composer.md#assetcreateparams
+    
     */
     // 문제 3 시작
-    const createResult = "*** 여기에 코드 작성 ***"
+    const createResult = await algorand.send.assetCreate({
+        assetName:"Apple Vision Pro", 
+        unitName:"AVP", 
+        decimals: 0, 
+        total:BigInt(1), 
+        sender: dispenser.addr
+    });
     // 문제 3 끝
 
     // Get assetIndex from transaction
@@ -83,7 +94,10 @@ async function main() {
     */
 
     // 문제 4 시작
-    "*** 여기에 코드 작성 ***"
+    await algorand.send.assetOptIn({
+        assetId : assetId,
+        sender : alice.addr
+    })
     // 문제 4 끝
 
     /* 
@@ -121,14 +135,27 @@ async function main() {
 
     // 밥이 앨리스에게 애플 비전 프로 ASA를 송금하는 트랜잭션 객체 생성
     // 문제 5 시작
-    const bobSendAssetTxnParam = "*** 여기에 코드 작성 ***"
+    const bobSendAssetTxnParam = {
+        assetId:assetId,
+        sender: bob.addr,
+        receiver: alice.addr,
+        amount: BigInt(0), 
+    }
 
     // 앨리스가 크리스에게 110 ALGO를 송금하는 트랜잭션 객체 생성
-    const alicePayTxnParam = "*** 여기에 코드 작성 ***"
+    const alicePayTxnParam = {
+        amount: algokit.algos(110),
+        sender: alice.addr,
+        receiver: chris.addr
+    }
 
     // 3개의 트랜잭션을 atomic transaction composer로 묶어서 전송
-    const atomicGroup = "*** 여기에 코드 작성 ***"
-    const result = "*** 여기에 코드 작성 ***"
+    const atomicGroup = algorand.newGroup();
+    const result = await atomicGroup
+    .addPayment(chrisPayTxnParam)
+    .addPayment(alicePayTxnParam)
+    .addAssetTransfer(bobSendAssetTxnParam)
+    .execute();
     // 문제 5 끝
 
     console.log("아래 트랜잭션 ID를 가진 3개의 트랜잭션이 어토믹 트랜잭션으로 동시 체결됬습니다!", result.txIds)
@@ -159,8 +186,8 @@ async function main() {
     }
 
     // === 세 계정 정보 출력이 어떤 정보를 제공하는지 궁금하면 uncomment 후 실행해보세요! ===
-    // console.log("Alice's Account:", await algorand.account.getInformation(alice.addr));
-    // console.log("Bob's Account:", await algorand.account.getInformation(bob.addr));
-    // console.log("Chris's Account:", await algorand.account.getInformation(chris.addr));
+    console.log("Alice's Account:", await algorand.account.getInformation(alice.addr));
+    console.log("Bob's Account:", await algorand.account.getInformation(bob.addr));
+    console.log("Chris's Account:", await algorand.account.getInformation(chris.addr));
 }
 main()

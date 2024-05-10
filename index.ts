@@ -100,7 +100,7 @@ async function main() {
     // 문제 4 시작
     const Opt_in = await algorand.send.assetOptIn (
         {   
-            sender : bob.addr,
+            sender : alice.addr,
             assetId : assetId
         }
     );
